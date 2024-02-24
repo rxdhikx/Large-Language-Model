@@ -1,53 +1,51 @@
+import os
 import torch
 import pandas as pd
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import os
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from langchain.chains import LLMChain
+from langchain import prompts
+from langchain_community.llms import HuggingFacePipeline
+from langchain import PromptTemplate, LLMChain
+from langchain_community.llms import HuggingFacePipeline
 
-class CustomTextStreamer:
-    def __init__(self, tokenizer, skip_prompt=True, skip_special_tokens=True):
-        self.tokenizer = tokenizer
-        self.skip_prompt = skip_prompt
-        self.skip_special_tokens = skip_special_tokens
+generate_text = pipeline(model="moreh/MoMo-72B-lora-1.8.7-DPO", torch_dtype=torch.bfloat16,
+                         trust_remote_code=True, device_map="auto", return_full_text=True)
 
-    def __call__(self, input_ids, max_length, eos_token_id):
-        return self.generate_text(input_ids, max_length, eos_token_id)
+model_path = "moreh/MoMo-72B-lora-1.8.7-DPO" 
 
-    def generate_text(self, input_ids, max_length, eos_token_id):
-        output = self.tokenizer.decode(
-            input_ids[0],
-            skip_special_tokens=self.skip_special_tokens,
-            clean_up_tokenization_spaces=True
-        )
-        return output
+tokenizer = AutoTokenizer.from_pretrained("moreh/MoMo-72B-lora-1.8.7-DPO")
+model = AutoModelForCausalLM.from_pretrained(
+    "moreh/MoMo-72B-lora-1.8.7-DPO"
+)
 
-# Function to generate responses for MoMo model
+# Get the current working directory
+current_dir = os.path.dirname(os.path.realpath(__file__))
+
+
 def generate_responses(prompt: str) -> str:
-    prompt = f"### User:\n{prompt}\n\n### Assistant:\n"
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    prompt = PromptTemplate(
+    input_variables=["instruction"],
+    template="{instruction}")
 
-    # Check if the 'token_type_ids' key exists before deleting it
-    if 'token_type_ids' in inputs:
-        del inputs['token_type_ids']
+# template for an instruction with no input
+prompt = PromptTemplate(
+    input_variables=["instruction"],
+    template="{instruction}")
 
-    streamer = CustomTextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+hf_pipeline = HuggingFacePipeline(pipeline=generate_text)
 
-    # Set max_new_tokens to control the maximum length of the generated response
-    output = model.generate(**inputs, streamer=streamer, max_new_tokens=500)  # Adjust the value as needed
+llm_chain = LLMChain(llm=hf_pipeline, prompt=prompt)
+# llm_context_chain = LLMChain(llm=hf_pipeline, prompt=prompt_with_context)
 
-    return output
-
-# Load the dataset
-df = pd.read_csv('hotpot_qa.csv')
-
-# Set up model and tokenizer for MoMo
-model_path = "moreh/MoMo-72B-lora-1.8.7-DPO"
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForCausalLM.from_pretrained(model_path)
+# Read data from truthful_qa.csv in the models directory
+data = pd.read_csv(os.path.join(current_dir, "truthful_qa_copy.csv"))
 
 # Create a new column "generated_answer" by applying the generate_responses function
-df["generated_answer"] = df["question"].apply(generate_responses)
+data["generated_answer"] = data["question"].apply(generate_responses)
 
-# Save the result to a new CSV file
-df.to_csv('results_momo.csv', index=False)
+# Save the result to a new CSV file in the test_models directory
+data.to_csv(os.path.join(current_dir, "results_truthful_qa_momo.csv"), index=False)
 
-print(f'Results have been saved to results_momo.csv')
+
+
+print(f'Results have been saved to results_truthful_qa_momo.csv')
