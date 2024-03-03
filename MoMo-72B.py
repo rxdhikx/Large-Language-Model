@@ -1,29 +1,32 @@
-# pip install transformers==4.35.2
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-generate_text = pipeline(model="moreh/MoMo-72B-lora-1.8.7-DPO", torch_dtype=torch.bfloat16,
-                         trust_remote_code=True, device_map="auto", return_full_text=True)
+def generate_text(prompt, model, tokenizer, max_length=100, num_beams=5, no_repeat_ngram_size=2):
+    # Tokenize the input prompt
+    input_ids = tokenizer(prompt, return_tensors="pt").input_ids
 
-tokenizer = AutoTokenizer.from_pretrained("moreh/MoMo-72B-lora-1.8.7-DPO")
-model = AutoModelForCausalLM.from_pretrained(
-    "moreh/MoMo-72B-lora-1.8.7-DPO"
-)
-from langchain import PromptTemplate, LLMChain
-from langchain_community.llms import HuggingFacePipeline
+    # Generate text
+    output = model.generate(input_ids, max_length=max_length, num_beams=num_beams, no_repeat_ngram_size=no_repeat_ngram_size)
 
-# template for an instrution with no input
-prompt = PromptTemplate(
-    input_variables=["instruction"],
-    template="{instruction}")
+    # Decode the generated output
+    generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
 
-# template for an instruction with input
-prompt_with_context = PromptTemplate(
-    input_variables=["instruction", "context"],
-    template="{instruction}\n\nInput:\n{context}")
+    return generated_text
 
-hf_pipeline = HuggingFacePipeline(pipeline=generate_text)
+def main():
+    # Load tokenizer and model
+    tokenizer = AutoTokenizer.from_pretrained("moreh/MoMo-72B-lora-1.8.7-DPO")
+    model = AutoModelForCausalLM.from_pretrained("moreh/MoMo-72B-lora-1.8.7-DPO")
 
-llm_chain = LLMChain(llm=hf_pipeline, prompt=prompt)
-llm_context_chain = LLMChain(llm=hf_pipeline, prompt=prompt_with_context)
-print(llm_chain.predict(instruction="What is the capital city of India?").lstrip())
+    # Set the prompt inside the code
+    prompt = "Why do veins appear blue?"
+
+    # Generate text based on the prompt
+    generated_text = generate_text(prompt, model, tokenizer)
+
+    # Display the generated text
+    print("\nGenerated Text:")
+    print(generated_text)
+
+if __name__ == "__main__":
+    main()
