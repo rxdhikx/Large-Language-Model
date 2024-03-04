@@ -10,6 +10,6 @@ Objectives -
 # ABOUT THE FILES
 
 <h3> subset_of_dataset.py - </h3>
-Used this for splitting the huge size of datasets (more than 300mb) to perform automation on a simpler size of dataset. 
-Original number of rows = 8k+ 
+Used this for splitting the huge size of datasets (more than 300mb) to perform automation on a simpler size of dataset. <br>
+Original number of rows = 8k+ <br>
 Subset number of rows = 50
