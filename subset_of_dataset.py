@@ -5,7 +5,7 @@ input_file_path = '/home/rravindra0463@id.sdsu.edu/models/datasets/trivia_qa_web
 output_file_path = 'subset_trivia_qa_web.csv'  # Replace with the desired path for the subset
 
 # Number of rows to extract
-num_rows_to_extract = 50
+num_rows_to_extract = 50 #change number of rows accordingly
 # Columns to keep
 columns_to_keep = ["question", "answer"]
 
