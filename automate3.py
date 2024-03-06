@@ -2,7 +2,7 @@ import os
 import torch
 import pandas as pd
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain 
 from langchain import prompts
 from langchain_community.llms import HuggingFacePipeline
 from langchain import PromptTemplate, LLMChain
