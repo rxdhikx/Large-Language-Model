@@ -30,7 +30,7 @@ Functional LLM code on 65 billion parametric pre-trained llama model to run by m
 <h3>llama_65b_automating_responses.py</h3>
 Functional LLM code on 65 billion parametric pre-trained llama model to run by automating prompts for response generation and storing the responses in a separate file.
 
-<h3>llama2.py</h3> (Can be ignored)
+<h3>llama2.py --Can be ignored!-- </h3> 
 Functional LLM code on 30 billion parametric pre-trained llama2 model to run by manual prompting for response generation.
 
 <h3> subset_of_dataset.py - </h3>
