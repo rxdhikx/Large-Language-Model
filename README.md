@@ -21,6 +21,9 @@ Python code to convert the downloaded large size datasets which are in parquet f
 <h3> dolly-12B.py - </h3>
 Functional LLM code on 12 billion parametric pre-trained dolly model to run by manual prompting for response generation.
 
+<h3>automate_llama_65b.py</h3>
+Functional automation code to generate responses with llama 65b model.
+
 <h3>llama2.py</h3>
 Functional LLM code on 30 billion parametric pre-trained llama2 model to run by manual prompting for response generation.
 
