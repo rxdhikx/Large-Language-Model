@@ -18,6 +18,9 @@ This code automates the prompts from dataset files and generates the answers thr
 <h3> convert_parquet_to_csv.py </h3>
 Python code to convert the downloaded large size datasets which are in parquet format to functionable csv files to perform our further operations.
 
+<h3>cosine_similarity.py</h3>
+This file is useful to determine the cosine similarity between two datasets and analsyse how similar or opposite they are.
+
 <h3> dolly-12B.py - </h3>
 Functional LLM code on 12 billion parametric pre-trained dolly model to run by manual prompting for response generation.
 
