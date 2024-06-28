@@ -1,5 +1,7 @@
 # LLM Hallucination Detection:
 
+[Report link](https://github.com/rxdhikx/Large-Language-Model/blob/main/Report.pdf)
+
 Objectives - 
 
 • Collection of relevant datasets from various sources to work on more than 200,000 samples.
